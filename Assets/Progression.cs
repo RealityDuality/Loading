@@ -16,7 +16,37 @@ public Image LoadBar;
 	private GameObject message4;
 	[SerializeField]
 	private GameObject message5;
-	[SerializeField]
+    [SerializeField]
+    private GameObject message6;
+    [SerializeField]
+    private GameObject message7;
+    [SerializeField]
+    private GameObject message8;
+    [SerializeField]
+    private GameObject message9;
+    [SerializeField]
+    private GameObject message10;
+    [SerializeField]
+    private GameObject message11;
+    [SerializeField]
+    private GameObject message12;
+    [SerializeField]
+    private GameObject message13;
+    [SerializeField]
+    private GameObject message14;
+    [SerializeField]
+    private GameObject message15;
+    [SerializeField]
+    private GameObject message16;
+    [SerializeField]
+    private GameObject message17;
+    [SerializeField]
+    private GameObject message18;
+    [SerializeField]
+    private GameObject message19;
+    [SerializeField]
+    private GameObject message20;
+    [SerializeField]
 	private int randomSpawn;
 
 	public GameObject[] messages;
@@ -69,6 +99,9 @@ private float AddTime;
 	[SerializeField]
 	private int NumberOfBox;
 
+    [SerializeField]
+    private int layerNumber;
+
     // Use this for initialization
     void Start () {
 		//AddTime = SpeedToFinish;
@@ -93,7 +126,7 @@ private float AddTime;
 
 		if(Input.anyKeyDown)
 			{
-	 	        KeyPressed();
+	 	    KeyPressed();
 
             //TimeToFinish += AddTime;
             //ActiveTime -= AddTime;
@@ -142,7 +175,7 @@ private float AddTime;
     public void KeyPressed() { 
 		keyStrokes++;
 
-
+        layerNumber = -1;
 
 		if(FirstTime == false){
 		RestartTime = 0;
@@ -167,43 +200,108 @@ private float AddTime;
 	IEnumerator SpawnMessage()
 	{
 
-		randomSpawn = Random.Range(1, 6);
+		randomSpawn = Random.Range(1, 21);
 		float spawnY = Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
 		float spawnX = Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
-		Vector2 spawnPosition = new Vector2(spawnX, spawnY);
+		Vector3 spawnPosition = new Vector3(spawnX, spawnY, layerNumber);
 
 		if (TimeToSpawn == true) {
 			switch (randomSpawn) {
 			case 1:
-				Instantiate (message1, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (0, 360))));
+				Instantiate (message1, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
 				NumberOfBox += 1;
-				break;
+                break;
 			case 2:
-				Instantiate (message2, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (0, 360))));
+				Instantiate (message2, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
 			case 3:
-				Instantiate (message3, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (0, 360))));
+				Instantiate (message3, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
 			case 4:
-				Instantiate (message4, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (0, 360))));
+				Instantiate (message4, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
 			case 5:
-				Instantiate (message5, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (0, 360))));
+				Instantiate (message5, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
-			}
+            case 6:
+                Instantiate(message6, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 7:
+                Instantiate(message7, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 8:
+                Instantiate(message8, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 9:
+                Instantiate(message9, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 10:
+                Instantiate(message10, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 11:
+                Instantiate(message11, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 12:
+                Instantiate(message12, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 13:
+                Instantiate(message13, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 14:
+                Instantiate(message14, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 15:
+                Instantiate(message15, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 16:
+                Instantiate(message16, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 17:
+                Instantiate(message17, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 18:
+                Instantiate(message18, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 19:
+                Instantiate(message19, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            case 20:
+                Instantiate(message20, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                NumberOfBox += 1;
+                break;
+            }
 		}
 
-		if (NumberOfBox == 20) {
-			WaitSeconds -= 0.2f;
-		} else if (NumberOfBox == 50) {
-			WaitSeconds -= 0.2f;
-		} else if (NumberOfBox == 0) {
+        if (NumberOfBox == 20) {
+            WaitSeconds -= 0.3f;
+        } else if (NumberOfBox == 50) {
+            WaitSeconds -= 0.3f;
+        } else if (NumberOfBox == 100)
+        {
+            WaitSeconds -= 0.3f;
+        } else if (NumberOfBox == 0) {
 			WaitSeconds = DefaultWaitSeconds;
 		}
+
+        layerNumber--;
 
 		yield return new WaitForSeconds(WaitSeconds);
 		StartCoroutine(SpawnMessage());
