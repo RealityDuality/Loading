@@ -2,10 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.IO;
+using System.Text;
+using System;
+
 
 public class Progression : MonoBehaviour {
+    //import System.IO;
 
-public Image LoadBar;
+    public Image LoadBar;
 	[SerializeField]
 	private GameObject message1;
 	[SerializeField]
@@ -55,6 +60,9 @@ public Image LoadBar;
 
 	public bool FirstTime;
 
+    [SerializeField]
+    private float NormalTime;
+
 [SerializeField]
 private float AddTime;
 
@@ -102,6 +110,37 @@ private float AddTime;
     [SerializeField]
     private int layerNumber;
 
+    public string PrintKey;
+
+    [SerializeField]
+    private int FileNum;
+
+    [SerializeField]
+    private int CurrentFileNum;
+
+    [SerializeField]
+    private string SaveSlot;
+
+
+    public InputField HereName;
+    [SerializeField]
+    private GameObject FieldRemove;
+
+
+    public string ConvName;
+    [SerializeField]
+    private bool NameNotNull;
+
+    private float MinTimeToFinish;
+
+    [SerializeField]
+    private int HalfwayKey;
+
+    private float TimeToReachHalf;
+
+    private bool HalfTimed;
+
+
     // Use this for initialization
     void Start () {
 		//AddTime = SpeedToFinish;
@@ -110,42 +149,73 @@ private float AddTime;
 
 		HalfTime = TimeToFinish / 2;
 		TimeToSpawn = true;
+
+        FileNum = PlayerPrefs.GetInt(SaveSlot);
+
+        CurrentFileNum = FileNum;
+        keyStrokes = 0;
+
+        MinTimeToFinish = MaxTimeToFinish - 0.0001f;
+
+
 	}
 
 	// Update is called once per frame
 	void Update () {
 		messages = GameObject.FindGameObjectsWithTag("message");
 
+        if (NameNotNull == true)
+        {
 
-		ActiveTime += Time.deltaTime / SpeedToFinish;
-                var percent = ActiveTime / TimeToFinish;
-                LoadBar.fillAmount = Mathf.Lerp(0, 1, percent);
-
-          
-
-
-		if(Input.anyKeyDown)
-			{
-	 	    KeyPressed();
-
-            //TimeToFinish += AddTime;
-            //ActiveTime -= AddTime;
-			SpeedToFinish += AddTime;
-
-			}
+            ActiveTime += Time.deltaTime / SpeedToFinish;
+            var percent = ActiveTime / TimeToFinish;
+            LoadBar.fillAmount = Mathf.Lerp(0, 1, percent);
 
 
+           
+            if (ActiveTime >= MaxTimeToFinish)
+            {
+                if(FileNum == CurrentFileNum){
+                    Write2File();
+    
+                }
 
-		if (SpeedToFinish >= MinSpeedToFinish) {
-			SpeedToFinish -= Time.deltaTime / 64;
+                //LoadScene for end screen here. Bad End
+            }
 
-		}
-		if (SpeedToFinish >= MaxSpeedToFinish) {
-			SpeedToFinish = MaxSpeedToFinish;
-		}
+            if (ActiveTime >= HalfTime ){
+                if(HalfTimed == false){
+                    
+                    TimeToReachHalf = NormalTime;
+                    HalfTimed = true;
+                }
+            }
+
+            if (Input.anyKeyDown)
+            {
+                KeyPressed();
+
+                //TimeToFinish += AddTime;
+                //ActiveTime -= AddTime;
+                SpeedToFinish += AddTime;
+
+            }
 
 
 
+            if (SpeedToFinish >= MinSpeedToFinish)
+            {
+                SpeedToFinish -= Time.deltaTime / 64;
+
+            }
+            if (SpeedToFinish >= MaxSpeedToFinish)
+            {
+                SpeedToFinish = MaxSpeedToFinish;
+            }
+
+
+        }
+       
 	 }
 
 
@@ -169,12 +239,16 @@ private float AddTime;
 			TimeToSpawn = true;
 		}
 
+        if(NameNotNull == true){
+            NormalTime += Time.fixedDeltaTime;
+        }
+
 	}
 
 
     public void KeyPressed() { 
 		keyStrokes++;
-
+        //Write2File();
         layerNumber = -1;
 
 		if(FirstTime == false){
@@ -185,6 +259,9 @@ private float AddTime;
 			SpeedToFinish += IncBy;
 		}
 
+        if(ActiveTime >= HalfTime){
+            HalfwayKey++;
+        }
 		foreach(GameObject message in messages)
 		{
 			Destroy(message);
@@ -193,98 +270,144 @@ private float AddTime;
 
     }
 
+    public void NameEntered(){
+        
+        ConvName = HereName.text;
+
+        PlayerPrefs.SetString("Name", ConvName);
+
+        NameNotNull = true;
+
+        FieldRemove.SetActive(false);
+
+    }
+
+
+     public void Write2File(){
+        
+
+
+        FileNum++;
 
 
 
+
+
+        var lines = string.Format("{0}, {1}, {2}, {3}, {4}, {5}", ConvName, keyStrokes, NormalTime, FileNum, HalfwayKey, TimeToReachHalf);
+        var lineSetup = string.Format( "Name, Key Strokes, Time Spent, Index, Stage 2 Keystrokes, Time to reach halfway");
+        using (StreamWriter sw = new StreamWriter("database.csv", append: true)){
+
+
+
+
+
+
+            if (File.Exists("data.csv"))
+            {
+                File.AppendAllText("data.csv", lines + Environment.NewLine);
+                Debug.Log("File already exists");
+            }
+
+            else{
+                File.AppendAllText("data.csv", lineSetup + Environment.NewLine);
+                File.AppendAllText("data.csv", lines + Environment.NewLine);
+            }
+
+
+         
+
+       }
+        PlayerPrefs.SetInt(SaveSlot, FileNum);
+    }
 
 	IEnumerator SpawnMessage()
 	{
 
-		randomSpawn = Random.Range(1, 21);
-		float spawnY = Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-		float spawnX = Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+		randomSpawn = UnityEngine.Random.Range(1, 21);
+		float spawnY = UnityEngine.Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
+		float spawnX = UnityEngine.Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
 		Vector3 spawnPosition = new Vector3(spawnX, spawnY, layerNumber);
 
 		if (TimeToSpawn == true) {
 			switch (randomSpawn) {
 			case 1:
-				Instantiate (message1, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
+				Instantiate (message1, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, UnityEngine.Random.Range (-75, 75))));
 				NumberOfBox += 1;
                 break;
 			case 2:
-				Instantiate (message2, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
+				Instantiate (message2, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, UnityEngine.Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
 			case 3:
-				Instantiate (message3, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
+				Instantiate (message3, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, UnityEngine.Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
 			case 4:
-				Instantiate (message4, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
+				Instantiate (message4, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, UnityEngine.Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
 			case 5:
-				Instantiate (message5, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, Random.Range (-75, 75))));
+				Instantiate (message5, spawnPosition, Quaternion.Euler (new Vector3 (0, 0, UnityEngine.Random.Range (-75, 75))));
 				NumberOfBox += 1;
 				break;
             case 6:
-                Instantiate(message6, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message6, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 7:
-                Instantiate(message7, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message7, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 8:
-                Instantiate(message8, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message8, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 9:
-                Instantiate(message9, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message9, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 10:
-                Instantiate(message10, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message10, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 11:
-                Instantiate(message11, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message11, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 12:
-                Instantiate(message12, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message12, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 13:
-                Instantiate(message13, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message13, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 14:
-                Instantiate(message14, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message14, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 15:
-                Instantiate(message15, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message15, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 16:
-                Instantiate(message16, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message16, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 17:
-                Instantiate(message17, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message17, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 18:
-                Instantiate(message18, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message18, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 19:
-                Instantiate(message19, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message19, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             case 20:
-                Instantiate(message20, spawnPosition, Quaternion.Euler(new Vector3(0, 0, Random.Range(-75, 75))));
+                Instantiate(message20, spawnPosition, Quaternion.Euler(new Vector3(0, 0, UnityEngine.Random.Range(-75, 75))));
                 NumberOfBox += 1;
                 break;
             }
