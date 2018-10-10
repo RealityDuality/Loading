@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio for Mac
+# Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loading", "Assembly-CSharp.csproj", "{16AAC66E-95B4-88CF-4373-04A849F5DED6}"
 EndProject
 Global

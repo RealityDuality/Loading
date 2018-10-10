@@ -108,7 +108,7 @@ private float AddTime;
 	private int NumberOfBox;
 
     [SerializeField]
-    private int layerNumber;
+    private float layerNumber;
 
     public string PrintKey;
 
@@ -140,6 +140,10 @@ private float AddTime;
 
     private bool HalfTimed;
 
+    public GameObject background;
+    public GameObject background1;
+    public GameObject loadingText;
+
 
     // Use this for initialization
     void Start () {
@@ -170,7 +174,9 @@ private float AddTime;
             ActiveTime += Time.deltaTime / SpeedToFinish;
             var percent = ActiveTime / TimeToFinish;
             LoadBar.fillAmount = Mathf.Lerp(0, 1, percent);
-
+            background.SetActive(false);
+            background1.SetActive(true);
+            loadingText.SetActive(true);
 
            
             if (ActiveTime >= MaxTimeToFinish)
@@ -324,8 +330,8 @@ private float AddTime;
 	{
 
 		randomSpawn = UnityEngine.Random.Range(1, 21);
-		float spawnY = UnityEngine.Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y);
-		float spawnX = UnityEngine.Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x);
+		float spawnY = UnityEngine.Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).y+2, Camera.main.ScreenToWorldPoint(new Vector2(0, Screen.height)).y-2);
+		float spawnX = UnityEngine.Random.Range(Camera.main.ScreenToWorldPoint(new Vector2(0, 0)).x+1.75f, Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0)).x-1.75f);
 		Vector3 spawnPosition = new Vector3(spawnX, spawnY, layerNumber);
 
 		if (TimeToSpawn == true) {
@@ -413,18 +419,47 @@ private float AddTime;
             }
 		}
 
-        if (NumberOfBox == 20) {
-            WaitSeconds -= 0.3f;
-        } else if (NumberOfBox == 50) {
-            WaitSeconds -= 0.3f;
-        } else if (NumberOfBox == 100)
+        if (NumberOfBox == 5) {
+            WaitSeconds -= 0.25f;
+        } else if (NumberOfBox == 8) {
+            WaitSeconds -= 0.25f;
+        } else if (NumberOfBox == 10)
         {
-            WaitSeconds -= 0.3f;
-        } else if (NumberOfBox == 0) {
+            WaitSeconds -= 0.25f;
+        }
+        else if (NumberOfBox == 12)
+        {
+            WaitSeconds -= 0.25f;
+        }
+        else if (NumberOfBox == 15)
+        {
+            WaitSeconds -= 0.25f;
+        }
+        else if (NumberOfBox == 20)
+        {
+            WaitSeconds -= 0.2f;
+        }
+        else if (NumberOfBox == 30)
+        {
+            WaitSeconds -= 0.15f;
+        }
+        else if (NumberOfBox == 45)
+        {
+            WaitSeconds -= 0.15f;
+        }
+        else if (NumberOfBox == 70)
+        {
+            WaitSeconds -= 0.1f;
+        }
+        else if (NumberOfBox == 100)
+        {
+            WaitSeconds -= 0.1f;
+        }
+        else if (NumberOfBox == 0) {
 			WaitSeconds = DefaultWaitSeconds;
 		}
 
-        layerNumber--;
+        layerNumber -= 0.1f;
 
 		yield return new WaitForSeconds(WaitSeconds);
 		StartCoroutine(SpawnMessage());
