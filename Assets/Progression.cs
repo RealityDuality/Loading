@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.IO;
 using System.Text;
 using System;
@@ -134,6 +135,13 @@ private float AddTime;
     private float MinTimeToFinish;
 
     [SerializeField]
+    private float MaxKeys;
+
+[SerializeField]
+private int Scoring;
+
+
+    [SerializeField]
     private int HalfwayKey;
 
     private float TimeToReachHalf;
@@ -143,6 +151,8 @@ private float AddTime;
     public GameObject background;
     public GameObject background1;
     public GameObject loadingText;
+    private bool DnF;
+
 
 
     // Use this for initialization
@@ -167,7 +177,7 @@ private float AddTime;
 	// Update is called once per frame
 	void Update () {
 		messages = GameObject.FindGameObjectsWithTag("message");
-
+QuitCode();
         if (NameNotNull == true)
         {
 
@@ -178,12 +188,13 @@ private float AddTime;
             background1.SetActive(true);
             loadingText.SetActive(true);
 
-           
+
             if (ActiveTime >= MaxTimeToFinish)
             {
                 if(FileNum == CurrentFileNum){
                     Write2File();
-    
+                    SceneManager.LoadScene("Win Screen");
+
                 }
 
                 //LoadScene for end screen here. Bad End
@@ -191,7 +202,7 @@ private float AddTime;
 
             if (ActiveTime >= HalfTime ){
                 if(HalfTimed == false){
-                    
+
                     TimeToReachHalf = NormalTime;
                     HalfTimed = true;
                 }
@@ -221,14 +232,14 @@ private float AddTime;
 
 
         }
-       
+
 	 }
 
 
 
 
 	void FixedUpdate(){
-	
+
 
 
 		if (ActiveTime >= HalfTime) {
@@ -247,12 +258,20 @@ private float AddTime;
 
         if(NameNotNull == true){
             NormalTime += Time.fixedDeltaTime;
+            if(NormalTime >= 900) {
+              PlayerPrefs.SetFloat("TimeSet", NormalTime);
+              PlayerPrefs.SetFloat("Scoring", keyStrokes);
+              PlayerPrefs.SetFloat("MaxScore", MaxKeys);
+
+              Write2File();
+              SceneManager.LoadScene("Lose Screen");
+            }
         }
 
 	}
 
 
-    public void KeyPressed() { 
+    public void KeyPressed() {
 		keyStrokes++;
         //Write2File();
         layerNumber = -1;
@@ -274,10 +293,22 @@ private float AddTime;
 			NumberOfBox = 0;
 		}
 
+    if(keyStrokes == MaxKeys){
+      DnF = true;
+      PlayerPrefs.SetFloat("TimeSet", NormalTime);
+      PlayerPrefs.SetFloat("Scoring", keyStrokes);
+      PlayerPrefs.SetFloat("MaxScore", MaxKeys);
+
+      Write2File();
+      SceneManager.LoadScene("Lose Screen");
+    }
+
+
+
     }
 
     public void NameEntered(){
-        
+
         ConvName = HereName.text;
 
         PlayerPrefs.SetString("Name", ConvName);
@@ -288,9 +319,27 @@ private float AddTime;
 
     }
 
+    public void QuitCode(){
+
+      DnF = false;
+      if(Input.GetKey(KeyCode.Keypad0)){
+        if(Input.GetKey(KeyCode.Keypad6)){
+          if( Input.GetKey(KeyCode.Keypad8)){
+            keyStrokes -= 2;
+            DnF = true;
+            PlayerPrefs.SetFloat("TimeSet", NormalTime);
+            PlayerPrefs.SetFloat("Scoring", keyStrokes);
+
+            Write2File();
+            SceneManager.LoadScene("Lose Screen");
+          }
+        }
+      }
+    }
+
 
      public void Write2File(){
-        
+
 
 
         FileNum++;
@@ -299,8 +348,8 @@ private float AddTime;
 
 
 
-        var lines = string.Format("{0}, {1}, {2}, {3}, {4}, {5}", ConvName, keyStrokes, NormalTime, FileNum, HalfwayKey, TimeToReachHalf);
-        var lineSetup = string.Format( "Name, Key Strokes, Time Spent, Index, Stage 2 Keystrokes, Time to reach halfway");
+        var lines = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}", ConvName, keyStrokes, NormalTime, FileNum, HalfwayKey, TimeToReachHalf, DnF);
+        var lineSetup = string.Format( "Name, Key Strokes, Time Spent, Index, Stage 2 Keystrokes, Time to reach halfway, Did Not Finish");
         using (StreamWriter sw = new StreamWriter("database.csv", append: true)){
 
 
@@ -320,7 +369,7 @@ private float AddTime;
             }
 
 
-         
+
 
        }
         PlayerPrefs.SetInt(SaveSlot, FileNum);
@@ -471,5 +520,3 @@ private float AddTime;
 
 
 }
-
-
