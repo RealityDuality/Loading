@@ -151,6 +151,7 @@ private int Scoring;
     public GameObject background;
     public GameObject background1;
     public GameObject loadingText;
+    public GameObject titleText;
     private bool DnF;
 
 
@@ -185,6 +186,7 @@ QuitCode();
             var percent = ActiveTime / TimeToFinish;
             LoadBar.fillAmount = Mathf.Lerp(0, 1, percent);
             background.SetActive(false);
+            titleText.SetActive(false);
             background1.SetActive(true);
             loadingText.SetActive(true);
 
@@ -295,6 +297,7 @@ QuitCode();
 
     if(keyStrokes == MaxKeys){
       DnF = true;
+      keyStrokes += 1;
       PlayerPrefs.SetFloat("TimeSet", NormalTime);
       PlayerPrefs.SetFloat("Scoring", keyStrokes);
       PlayerPrefs.SetFloat("MaxScore", MaxKeys);
@@ -309,13 +312,19 @@ QuitCode();
 
     public void NameEntered(){
 
-        ConvName = HereName.text;
+        if (HereName.text == "")
+        {
+            return;
+        } else
+        {
+            ConvName = HereName.text;
 
-        PlayerPrefs.SetString("Name", ConvName);
+            PlayerPrefs.SetString("Name", ConvName);
 
-        NameNotNull = true;
+            NameNotNull = true;
 
-        FieldRemove.SetActive(false);
+            FieldRemove.SetActive(false);
+        }
 
     }
 

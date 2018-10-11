@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class BackgroundScript : MonoBehaviour {
 
-    public Animator background;
+    private Animator background;
+    public AudioSource glitch;
 
     // Use this for initialization
     void Start () {
@@ -16,6 +17,7 @@ public class BackgroundScript : MonoBehaviour {
 		if (Input.anyKeyDown)
         {
             background.SetTrigger("Active");
+            glitch.Play();
         } else
         {
             background.ResetTrigger("Active");
