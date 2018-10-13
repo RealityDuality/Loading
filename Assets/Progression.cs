@@ -194,6 +194,8 @@ QuitCode();
             if (ActiveTime >= MaxTimeToFinish)
             {
                 if(FileNum == CurrentFileNum){
+                    PlayerPrefs.SetFloat("TimeSet", NormalTime);
+                    PlayerPrefs.SetFloat("Scoring", keyStrokes);
                     Write2File();
                     SceneManager.LoadScene("Win Screen");
 

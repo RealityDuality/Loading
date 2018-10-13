@@ -23,9 +23,9 @@ public float TimeValue;
 	// Update is called once per frame
 	void Update () {
 		Value = PlayerPrefs.GetFloat("Scoring");
-			TimeValue = PlayerPrefs.GetFloat("TimeSet");
-			MaxValue = PlayerPrefs.GetFloat("MaxScore");
-			Value -= 1;
+		TimeValue = PlayerPrefs.GetFloat("TimeSet");
+		MaxValue = PlayerPrefs.GetFloat("MaxScore");
+		Value -= 1;
 			//MaxValue -= Value;
 
 		//Scored.text = Value.ToString();
