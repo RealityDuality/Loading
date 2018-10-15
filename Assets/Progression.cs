@@ -319,6 +319,7 @@ QuitCode();
             return;
         } else
         {
+
             ConvName = HereName.text;
 
             PlayerPrefs.SetString("Name", ConvName);
@@ -326,6 +327,8 @@ QuitCode();
             NameNotNull = true;
 
             FieldRemove.SetActive(false);
+
+            SpeedToFinish -= 0.5f;
         }
 
     }

@@ -268,7 +268,7 @@ MonoBehaviour:
   TimeToSpawn: 0
   FirstTime: 1
   NormalTime: 0
-  AddTime: 0.5
+  AddTime: 0.4
   keyStrokes: 0
   TimeToFinish: 120
   MaxTimeToFinish: 120
@@ -291,7 +291,7 @@ MonoBehaviour:
   FieldRemove: {fileID: 1760384221}
   ConvName: 
   NameNotNull: 0
-  MaxKeys: 200
+  MaxKeys: 100
   Scoring: 0
   HalfwayKey: 0
   background: {fileID: 1715448173}

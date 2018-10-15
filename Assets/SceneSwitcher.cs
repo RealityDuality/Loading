@@ -32,7 +32,7 @@ public float TimeValue;
 
 
 
-		string FormatScore = string.Format("{0}/{1}", 200-Value, 200);
+		string FormatScore = string.Format("{0}/{1}", 100-Value, 100);
 
 
 
